@@ -29,9 +29,10 @@ def main():
     os.makedirs('testcases', exist_ok=True)
     for r in r_values:
         L = math.ceil(r * N)
-        clauses = generate_3sat_instance(N, L)
-        filename = f"testcases/3sat_N{N}_r{r:.1f}.cnf"
-        write_dimacs(clauses, N, filename)
+        for i in range(50):  
+            clauses = generate_3sat_instance(N, L)
+            filename = f"testcases/3sat_r{r:.1f}_{i}.cnf"
+            write_dimacs(clauses, N, filename)
 
 if __name__ == "__main__":
     main()
