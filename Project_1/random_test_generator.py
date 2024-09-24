@@ -29,7 +29,7 @@ def main():
     os.makedirs('testcases', exist_ok=True)
     for r in r_values:
         L = math.ceil(r * N)
-        for i in range(50):  
+        for i in range(100):  
             clauses = generate_3sat_instance(N, L)
             filename = f"testcases/3sat_r{r:.1f}_{i}.cnf"
             write_dimacs(clauses, N, filename)
