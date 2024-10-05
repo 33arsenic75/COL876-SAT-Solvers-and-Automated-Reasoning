@@ -104,15 +104,12 @@ class SATSolver:
         return clauses, literals
 
     def evaluate_literal(self, literal):
-        """
-        Evaluates the value of a literal based on current assignments.
-        :param literal: an integer, non-zero
-        :returns: value of the literal
-        """
         value = self.assignments[abs(literal)]
         return value if value == UNASSIGN else value ^ (literal < 0)
 
     def evaluate_clause(self, clause):
+        if not clause:
+            return TRUE
         values = list(map(self.evaluate_literal, clause))
         return UNASSIGN if UNASSIGN in values else max(values)
 
@@ -195,7 +192,7 @@ class SATSolver:
 
     def analyze_conflict(self, conflict_clause):
         """
-        Analyzes the conflict and learns a new clause.
+        Analyzes the conflict and learns a new clause using the Last UIP cut.
         :param conflict_clause: the conflicting clause
         :return: (level to backtrack to, learned clause)
         """
@@ -219,6 +216,7 @@ class SATSolver:
                     current_level_literals.add(lit)
                 else:
                     previous_level_literals.add(lit)
+
             if len(current_level_literals) == 1:
                 break
 
