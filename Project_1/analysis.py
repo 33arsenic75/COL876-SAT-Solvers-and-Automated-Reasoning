@@ -12,8 +12,8 @@ heuristics_list = [
     # 'vsids'
 ]
 testcases_folder = 'testcases'
-start_r = 4.4
-start_n = 6
+start_r = 5.0
+start_n = 7
 test_files = [f for f in os.listdir(testcases_folder) if f.endswith('.cnf')]
 # test_files.sort(rev)
 test_files.sort()

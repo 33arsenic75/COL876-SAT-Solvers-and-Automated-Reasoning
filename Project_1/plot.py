@@ -22,7 +22,7 @@ plt.title('Mean Time Taken by Each Heuristic as per r Value')
 plt.legend()
 plt.grid(True)
 plt.show()
-plt.savefig('plot.png')
+plt.savefig('plot1.png')
 
 # Calculate the number of SAT values for each r value
 sat_columns = ['dynamic_satisfiability', 'jeroslow_satisfiability']
