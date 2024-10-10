@@ -15,6 +15,14 @@ if __name__ == '__main__':
 
     heuristics = args.heuristics
     filename = args.filename
+    
+    # filename = "testcases/3sat_r3.8_0.cnf"
+    # heuristics = 'OrderedChoiceSolver'
+    # heuristics = 'RandomChoiceSolver'
+    # heuristics = 'VSIDSSolver'
+    # heuristics = 'DynamicLargestIndividualSumSolver'
+    # heuristics = 'JeroslowWangOneSidedSolver'
+
 
     if heuristics == 'OrderedChoiceSolver':
         solver = OrderedChoiceSolver(filename)
@@ -33,4 +41,4 @@ if __name__ == '__main__':
 
     answer = solver.execute()
     # print(answer)
-    print(answer['satisfiable'])
+    print(answer['satisfiable'],answer['decisions'])

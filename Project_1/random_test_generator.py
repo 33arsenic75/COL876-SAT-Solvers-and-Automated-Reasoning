@@ -2,6 +2,7 @@ import random
 import math
 import os
 import subprocess
+import argparse  # Add this import
 
 def generate_3sat_instance(N, L):
     clauses = []
@@ -25,13 +26,18 @@ def write_dimacs(clauses, N, filename):
 
 def main():
     N = 150
+    folder_name = 'testcases'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', type=int, default=10, help='Number of testcases per value of r')
+    args = parser.parse_args()  # Parse the arguments
+    testcases = args.n
     r_values = [i * 0.2 for i in range(1, 31)]
-    os.makedirs('testcases', exist_ok=True)
+    os.makedirs(folder_name, exist_ok=True)
     for r in r_values:
         L = math.ceil(r * N)
-        for i in range(10):  
+        for i in range(1,testcases+1):  
             clauses = generate_3sat_instance(N, L)
-            filename = f"testcases/3sat_r{r:.1f}_{i}.cnf"
+            filename = f"{folder_name}/3sat_r{r:.1f}_{i}.cnf"
             write_dimacs(clauses, N, filename)
 
 if __name__ == "__main__":

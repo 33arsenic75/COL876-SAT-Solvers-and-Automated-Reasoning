@@ -74,6 +74,15 @@ class SATSolver:
                 self.update_implication_graph(decision_var)
         return True
 
+    def pick_branching_variable(self):
+        """
+        Selects the first unassigned variable in the natural order.
+        :return: variable, assigned value
+        """
+        for var in self.variables:
+            if self.assignments[var] == UNASSIGN:
+                return var, TRUE
+                
     def parse_cnf(self, file_path):
         """
         Parses a DIMACS CNF file, returns clauses and literals.
@@ -141,10 +150,6 @@ class SATSolver:
             node.clause = clause
 
     def unit_propagation(self):
-        """
-        Performs unit propagation.
-        :return: None if no conflict, else the conflicting clause
-        """
         while True:
             propagation_queue = deque()
             for clause in self.clauses.union(self.learned_clauses):
@@ -256,10 +261,6 @@ class SATSolver:
                 del self.propagation_history[k]
 
 class ImplicationNode:
-    """
-    Represents a node in the implication graph.
-    """
-
     def __init__(self, variable, value):
         self.variable = variable
         self.value = value
@@ -274,10 +275,10 @@ class ImplicationNode:
             parents.update(parent.all_parents())
         return list(parents)
 
-    def __str__(self):
-        sign = '+' if self.value == TRUE else '-' if self.value == FALSE else '?'
-        return "[{}{}:L{}, {}p, {}c, {}]".format(
-            sign, self.variable, self.level, len(self.parents), len(self.children), self.clause)
+    # def __str__(self):
+    #     sign = '+' if self.value == TRUE else '-' if self.value == FALSE else '?'
+    #     return "[{}{}:L{}, {}p, {}c, {}]".format(
+    #         sign, self.variable, self.level, len(self.parents), len(self.children), self.clause)
 
-    def __repr__(self):
-        return str(self)
+    # def __repr__(self):
+    #     return str(self)

@@ -1,0 +1,110 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{tocloft}
+\usepackage{enumitem}
+\setlength{\parindent}{0pt} % Remove paragraph indentations
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecfont}{\normalfont}
+\renewcommand{\cftsubsecfont}{\normalfont}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsubsecpagefont}{\normalfont}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        \textbf{COL876: \\ Special Topics in Formal Methods}
+        
+        \vspace{1cm}
+        \LARGE
+        Project 1: CDCL Based SAT Solver
+        \vspace{1cm}
+        
+        \Large
+        \textbf{October 2024}
+        \vspace{1cm}
+  
+        Abhinav Rajesh Shripad (2022CS11596)\\
+        
+        \vfill
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.25]{front_page.png}
+
+            \label{fig:enter-label}
+        \end{figure}
+            
+        \vspace{0.8cm}
+            
+    \end{center}
+\end{titlepage}
+
+\clearpage
+
+
+\vspace{0.5cm}
+\tableofcontents
+\clearpage
+
+\section{Introduction}
+% \addcontentsline{toc}{section}{1. Introduction}
+
+This report presents the design, implementation, and analysis of a SAT solver based on the Conflict-Driven Clause Learning (CDCL) procedure. The primary objective of this project is to develop an efficient SAT solver capable of checking the satisfiability of CNF formulas in DIMACS format. Our implementation aims to handle complex formulas with at 150 variables.
+
+Our project focuses on two critical components of the CDCL procedure:
+
+\begin{itemize}
+    \item \textbf{Pick Branching Variable}: We discuss two heuristics for selecting the branching variable:
+    \begin{itemize}
+        \item \textbf{Jeroslow Wang One Sided Solver} \cite{jeroslow1990solving}: This method chooses the variable based on the Jeroslow-Wang rule, which assigns weights to variables depending on their occurrence in clauses, aiming to maximize the likelihood of satisfiability.
+        \item \textbf{Dynamic Largest Individual Sum Solver} \cite{moskewicz2001chaff}: This heuristic selects the variable based on the dynamic sum of individual clauses, favoring the variable with the largest influence.
+    \end{itemize}
+    We compare the performance of these two heuristics and implement a hybrid heuristic that combines the strengths of both approaches.
+    
+    \item \textbf{Conflict Analysis}: For conflict analysis, we have implemented:
+    \begin{itemize}
+        \item \textbf{Last UIP Cut}: This approach analyzes conflicts by tracing the conflict graph and selecting the last UIP for clause learning.
+        \item \textbf{Heuristic with Probabilistic UIP Selection}: In this method, we probabilistically choose between the last UIP and the first UIP for clause learning, based on some pre-defined probability distribution.
+    \end{itemize}
+\end{itemize}
+
+
+\section{Implementation Details}
+\subsection{Implication Graph Implementation}
+
+
+
+
+
+
+
+\subsection{CDCL Procedure Overview}
+\subsection{PickBranchingVariable Heuristic}
+\subsection{ConflictAnalysis Heuristic}
+\subsection{Other Key Implementation Aspects}
+
+\section{Experimental Setup}
+\subsection{Random 3-SAT Instance Generation}
+\subsection{Testing Methodology}
+
+\section{Results and Analysis}
+\subsection{Performance Metrics}
+\subsection{Time Complexity Analysis}
+\subsection{Heuristic Comparisons}
+
+\section{Discussion}
+\subsection{Interpretation of Results}
+\subsection{Strengths and Limitations}
+\subsection{Future Improvements}
+
+\section{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+% \section{References}
+\bibliographystyle{plain} % or any other style you prefer
+\bibliography{references} % references.bib is the name of your .bib file
+
+\end{document}
