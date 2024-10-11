@@ -7,16 +7,16 @@ heuristics_list = [
     # 'ordered',
     # 'random',
     # 'frequent',
-    'dynamic',
+    # 'dynamic',
     'jeroslow',
     # 'vsids'
 ]
 testcases_folder = 'testcases'
-start_r = 5.0
-start_n = 7
+start_r = 0
+start_n = 0
 test_files = [f for f in os.listdir(testcases_folder) if f.endswith('.cnf')]
-# test_files.sort(rev)
-test_files.sort()
+test_files.sort(reverse = True)
+
 with open('benchmark_results.csv', mode='a', newline='') as csv_file:  # Change mode to 'a' for appending
     fieldnames = ['r'] + [f'{heuristic}_time' for heuristic in heuristics_list] + [f'{heuristic}_satisfiability' for heuristic in heuristics_list] + [f'{heuristic}_decision' for heuristic in heuristics_list]  # Added value to fieldnames
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames)

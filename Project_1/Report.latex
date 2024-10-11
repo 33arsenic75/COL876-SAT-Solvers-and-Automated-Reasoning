@@ -71,20 +71,65 @@ Our project focuses on two critical components of the CDCL procedure:
     \end{itemize}
 \end{itemize}
 
+\section{Notation}
+The following table summarizes the notations used in this report:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|l|}
+        \hline
+        \textbf{Symbol} & \textbf{Description} \\ \hline
+        \texttt{TRUE}       &  Any variable/clause/formula which evaluates to True under the partial assignment\\ \hline
+        \texttt{FALSE}      & Any variable/clause/formula which evaluates to False under the partial assignment \\ \hline
+        \texttt{UNASSIGN}   & Any variable/clause/formula which evaluates to neither \texttt{TRUE} nor \texttt{FALSE} \\ \hline
+        $n$       & Number of variables in a $F_{CNF}$ \\ \hline
+        $m$  & Number of clauses in a $F_{CNF} $\\ \hline
+        $F$            & The Boolean formula in CNF format \\ \hline
+        $\alpha$       & A truth assignment for variables \\ \hline
+    \end{tabular}
+    \caption{Table of Notations}
+    \label{tab:notations}
+\end{table}
+
 
 \section{Implementation Details}
 \subsection{Implication Graph Implementation}
+We discuss how Implication Node is implemented and why certain attributes are needed and how it helps in easier update and unit propagation and conflict analysis in Implication Graph.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.40\textwidth]{Implication Node.png}
+    \label{fig:Implication Node Attributes} % Label for referencing the figure
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Unit Propagation}: While unit propagation is done, if any clause(including learned clauses) evaluates to \texttt{FALSE}, we have reached a \textbf{conflict}, 
+    
+\end{itemize}
 
 
+\section{Pick Branching Variable Heuristic}
+\subsection{Dynamic Largest Individual Sum Solver}
+We implement the simplest version of \textbf{DLIS}, were for each \texttt{UNASSIGN} variable, we count the number of its occurrences with either parity in \texttt{UNASSIGN} clauses, and chose that variable and its assignment which occurs with maximum number. 
+
+We can think of it as, we append to our partial assignment a variable which decreases the number of \texttt{UNASSIGN} clauses the most. This also serves as an intuition for the heuristics.
+
+\subsection{Jeroslow Wang One Sided Solver}
+This is my favourite heuristics, let $S$ be the set of disjunctive clauses in \textbf{$F_{CNF}$}, we define the weight of $S$ to be as 
+$$W(S) = \sum_{p} \frac{n_{p}}{2^{p}}$$
+where $n_p$ is the number of clauses in $S$ with length $p$ in $S$, in our Project $p$ is always 3. We now define for each \texttt{UNASSIGN} literal $x$ and its assignment, we define $i$ $W(S_{x}^{i})$ as weight of subset of $S$ in which remains \texttt{UNASSIGN} after assigning $x$ as $i$. We choose an literal $x$ and its assignment $i$ for branching such that it makes $W(S_{x}^{i})$ maximum. Ties are resolved arbitrarily.
+\\
+We can see that an clause with size $p$ rules out exactly $2^{n-p}$ assignments from the possible set of truth assignments. Thus S rules out \textbf{at most} $\sum_{p}n_{p}2^{n-p} = 2^{n}W(S)$. Thus we choose a literal and an assignment which minimizes the weight, thus ruling out a very less number of assignments, thus making it very likely to be \textbf{SAT}. \cite{jeroslow1990solving}
 
 
+\section{Conflict Analysis Heuristic}
 
+\subsection{Last UIP Cut}
+The Last UIP (Unique Implication Point) Cut is a crucial technique in conflict analysis for SAT solvers. When a conflict occurs during the solving process, the Last UIP Cut helps in determining which variables to backtrack to in order to learn a new clause that can prevent the same conflict from occurring again.
+The process involves analyzing the implication graph created during the solving process. The Last UIP is identified as the most recent point in the graph where a unique implication leads to the conflict. By backtracking to this point, the solver can derive a new clause that excludes the conflicting assignment, thus improving the efficiency of the search.
+In our implementation, we ensure that the Last UIP is correctly identified by traversing the implication graph and maintaining a record of the assignments made. This allows us to effectively learn from conflicts and enhance the solver's performance.
+% Note: Ensure that the implementation of the analyze_conflict method correctly handles the identification of the Last UIP.
 
-
-\subsection{CDCL Procedure Overview}
-\subsection{PickBranchingVariable Heuristic}
-\subsection{ConflictAnalysis Heuristic}
-\subsection{Other Key Implementation Aspects}
 
 \section{Experimental Setup}
 \subsection{Random 3-SAT Instance Generation}

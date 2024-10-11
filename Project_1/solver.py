@@ -1,7 +1,11 @@
 import os
 import time
 from collections import deque
-from constants import TRUE, FALSE, UNASSIGN
+TRUE = 1
+FALSE = 0
+UNASSIGN = -1
+
+
 
 class SATSolver:
     def __init__(self, file_path):
@@ -188,19 +192,10 @@ class SATSolver:
         return filter(lambda v: v in self.assignments and self.assignments[v] == UNASSIGN, self.variables)
             
     def select_decision_variable(self):
-        """
-        Selects a variable for decision making.
-        :return: variable, assigned value
-        """
         var = next(self.unassigned_vars())
         return var, TRUE
 
     def analyze_conflict(self, conflict_clause):
-        """
-        Analyzes the conflict and learns a new clause using the Last UIP cut.
-        :param conflict_clause: the conflicting clause
-        :return: (level to backtrack to, learned clause)
-        """
         def latest_assigned_var(clause):
             for var in reversed(assign_history):
                 if var in clause or -var in clause:
@@ -239,9 +234,6 @@ class SATSolver:
         return backtrack_level, learned_clause
     
     def backtrack(self, level):
-        """
-        Backtracks to the specified decision level.
-        """
         for var, node in self.implication_graph.items():
             if node.level <= level:
                 node.children[:] = [child for child in node.children if child.level <= level]
@@ -275,10 +267,3 @@ class ImplicationNode:
             parents.update(parent.all_parents())
         return list(parents)
 
-    # def __str__(self):
-    #     sign = '+' if self.value == TRUE else '-' if self.value == FALSE else '?'
-    #     return "[{}{}:L{}, {}p, {}c, {}]".format(
-    #         sign, self.variable, self.level, len(self.parents), len(self.children), self.clause)
-
-    # def __repr__(self):
-    #     return str(self)

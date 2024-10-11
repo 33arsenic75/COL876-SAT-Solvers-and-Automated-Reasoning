@@ -26,7 +26,7 @@ def test_satisfiability(folder_path):
                         r_value = r.group(1)
                     else:
                         r_value = 'N/A'
-                    result = 1 if is_satisfiable else 0
+                    result = 'SAT' if is_satisfiable else 'UNSAT'
                     result_writer.writerow([r_value, result, conflicts, decisions, propagations, time_taken])
                     print(f"Solved {filename}")
 

@@ -1,7 +1,9 @@
 import operator
 import random
 from solver import SATSolver
-from constants import TRUE, FALSE, UNASSIGN
+TRUE = 1
+FALSE = 0
+UNASSIGN = -1
 
 
 class OrderedChoiceSolver(SATSolver):

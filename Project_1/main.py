@@ -41,4 +41,4 @@ if __name__ == '__main__':
 
     answer = solver.execute()
     # print(answer)
-    print(answer['satisfiable'],answer['decisions'])
+    print(answer['satisfiable'],answer['decisions'],answer['time'])
