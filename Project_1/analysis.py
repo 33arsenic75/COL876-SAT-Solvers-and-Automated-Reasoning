@@ -7,15 +7,17 @@ heuristics_list = [
     # 'ordered',
     # 'random',
     # 'frequent',
-    # 'dynamic',
+    'dynamic',
     'jeroslow',
     # 'vsids'
 ]
 testcases_folder = 'testcases'
 start_r = 0
 start_n = 0
+end_r = 1.2
+end_n = 0
 test_files = [f for f in os.listdir(testcases_folder) if f.endswith('.cnf')]
-test_files.sort(reverse = True)
+test_files.sort()
 
 with open('benchmark_results.csv', mode='a', newline='') as csv_file:  # Change mode to 'a' for appending
     fieldnames = ['r'] + [f'{heuristic}_time' for heuristic in heuristics_list] + [f'{heuristic}_satisfiability' for heuristic in heuristics_list] + [f'{heuristic}_decision' for heuristic in heuristics_list]  # Added value to fieldnames
@@ -30,6 +32,8 @@ with open('benchmark_results.csv', mode='a', newline='') as csv_file:  # Change 
             n_value = int(r.group(2))
             if r_value < start_r or (r_value == start_r and (n_value < start_n or n_value == 10)):
                 continue
+            if r_value > end_r or (r_value == end_r and n_value > end_n):
+                break  # Stop processing when reaching end_r and end_n
         else:
             r_value = 'N/A'
         

@@ -5,37 +5,6 @@ TRUE = 1
 FALSE = 0
 UNASSIGN = -1
 
-
-class OrderedChoiceSolver(SATSolver):
-    def select_decision_variable(self):
-        var = random.choice(list(self.unassigned_vars()))
-        # print(f"OrderedChoiceSolver picked variable: {var}")
-        return var, random.sample([TRUE, FALSE], 1)[0]
-
-
-class RandomChoiceSolver(SATSolver):
-    def select_decision_variable(self):
-        var = random.choice(list(self.unassigned_vars()))
-        # print(f"RandomChoiceSolver picked variable: {var}")
-        return var, random.sample([TRUE, FALSE], 1)[0]
-
-
-class FrequentVarsFirstSolver(SATSolver):
-    def preprocess(self):
-        vs = {x: 0 for x in self.variables}
-        for clause in self.clauses:
-            for v in clause:
-                vs[abs(v)] += 1
-        self.vars_order_frequency = [
-            t[0] for t in
-            sorted(vs.items(), key=operator.itemgetter(1), reverse=True)]
-
-    def select_decision_variable(self):
-        var = next(filter(lambda v: self.assignments[v] == UNASSIGN, self.vars_order_frequency))
-        # print(f"FrequentVarsFirstSolver picked variable: {var}")
-        return var, random.sample([TRUE, FALSE], 1)[0]
-
-
 class DynamicLargestIndividualSumSolver(SATSolver):
     def all_unresolved_clauses(self):
         return filter(lambda c: self.evaluate_clause(c) == UNASSIGN, self.clauses)
@@ -74,25 +43,4 @@ class JeroslowWangOneSidedSolver(SATSolver):
         unassigned_vars = filter(lambda v: self.assignments[v] == UNASSIGN, self.variables)
         best_var = max(unassigned_vars, key=lambda v: self.jw_scores[v])
         # print(f"JeroslowWangOneSidedSolver picked variable: {best_var}")
-        return best_var, random.sample([TRUE, FALSE], 1)[0]
-
-
-class VSIDSSolver(SATSolver):
-    def __init__(self, cnf):
-        super().__init__(cnf)
-        self.vsids_scores = {x: 0 for x in self.variables}
-        self.decay_factor = 0.95
-
-    def bump_variable(self, var):
-        self.vsids_scores[var] += 1
-
-    def decay_scores(self):
-        for var in self.vsids_scores:
-            self.vsids_scores[var] *= self.decay_factor
-
-    def select_decision_variable(self):
-        self.decay_scores()
-        unassigned_vars = filter(lambda v: self.assignments[v] == UNASSIGN, self.variables)
-        best_var = max(unassigned_vars, key=lambda v: self.vsids_scores[v])
-        # print(f"VSIDSSolver picked variable: {best_var}")
         return best_var, random.sample([TRUE, FALSE], 1)[0]

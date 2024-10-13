@@ -26,12 +26,12 @@ def write_dimacs(clauses, N, filename):
 
 def main():
     N = 150
-    folder_name = 'testcases_1'
+    folder_name = 'testcases'
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', type=int, default=10, help='Number of testcases per value of r')
     args = parser.parse_args()  # Parse the arguments
     testcases = args.n
-    r_values = [i * 0.2 for i in range(1, 31)]
+    r_values = [i * 0.2 for i in range(1, 11)]
     
     os.makedirs(folder_name, exist_ok=True)
     for r in r_values:

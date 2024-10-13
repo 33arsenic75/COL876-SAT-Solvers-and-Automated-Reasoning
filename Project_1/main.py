@@ -1,11 +1,10 @@
 import argparse
 import os
 from solver import SATSolver
-from branch_heuristics import OrderedChoiceSolver, RandomChoiceSolver, FrequentVarsFirstSolver, DynamicLargestIndividualSumSolver, JeroslowWangOneSidedSolver, VSIDSSolver
+from branch_heuristics import DynamicLargestIndividualSumSolver, JeroslowWangOneSidedSolver
 import csv
 import pandas as pd
 import time
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Choose heuristics and input file for SAT Solver.')
@@ -15,30 +14,21 @@ if __name__ == '__main__':
 
     heuristics = args.heuristics
     filename = args.filename
-    
-    # filename = "testcases/3sat_r3.8_0.cnf"
-    # heuristics = 'OrderedChoiceSolver'
-    # heuristics = 'RandomChoiceSolver'
-    # heuristics = 'VSIDSSolver'
-    # heuristics = 'DynamicLargestIndividualSumSolver'
-    # heuristics = 'JeroslowWangOneSidedSolver'
 
-
-    if heuristics == 'OrderedChoiceSolver':
-        solver = OrderedChoiceSolver(filename)
-    elif heuristics == 'RandomChoiceSolver':
-        solver = RandomChoiceSolver(filename)
-    elif heuristics == 'FrequentVarsFirstSolver':
-        solver = FrequentVarsFirstSolver(filename)
-    elif heuristics == 'DynamicLargestIndividualSumSolver':
+    if heuristics == 'DynamicLargestIndividualSumSolver':
         solver = DynamicLargestIndividualSumSolver(filename)
     elif heuristics == 'JeroslowWangOneSidedSolver':
         solver = JeroslowWangOneSidedSolver(filename)
-    elif heuristics == 'VSIDSSolver':
-        solver = VSIDSSolver(filename)
     else:
         raise ValueError(f"Unknown heuristics: {heuristics}")
 
+
     answer = solver.execute()
-    # print(answer)
-    print(answer['satisfiable'],answer['decisions'],answer['time'])
+
+    print(f"File Path: {answer['file']}")
+    print(f"Satisfiability: {answer['satisfiable']}")
+    if answer['satisfiable'] == "SAT":
+        print(f"Satisfying Assignment: {answer['assignment']}")
+    
+    print(f"Time Taken: {answer['time']}")
+    print(f"Decision Count: {answer['decisions']}")

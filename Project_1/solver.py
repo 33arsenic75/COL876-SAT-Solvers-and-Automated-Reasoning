@@ -5,8 +5,6 @@ TRUE = 1
 FALSE = 0
 UNASSIGN = -1
 
-
-
 class SATSolver:
     def __init__(self, file_path):
         if not os.path.isfile(file_path):
@@ -28,6 +26,7 @@ class SATSolver:
         elapsed_time = time.time() - start_time
         result = self.format_output(is_satisfiable, elapsed_time)
         return {
+            'file': self.file_path,
             'satisfiable': "SAT" if is_satisfiable else "UNSAT",
             'time': elapsed_time,
             'assignment': result,
@@ -35,29 +34,18 @@ class SATSolver:
         }
 
     def format_output(self, is_satisfiable, elapsed_time):
-        output = {}
-        output['file'] = self.file_path
-        output['satisfiable'] = "SAT" if is_satisfiable else "UNSAT"
-        output['time'] = elapsed_time
-        output['decisions'] = self.decision_count
-        output['assignment'] = ' '.join(['{}{}'.format('' if val == 1 else '-', var)
+        output =  ' '.join(['{}{}'.format('' if val == 1 else '-', var)
                                       for var, val in self.assignments.items()])
         return output
 
     def preprocess(self):
-        """ Preprocessing steps before solving """
         pass
 
     def solve(self):
-        """
-        Determines if the CNF is satisfiable.
-        :return: True if SAT, False if UNSAT
-        """
         self.preprocess()
         while not self.all_vars_assigned():
             conflict_clause = self.unit_propagation()
             if conflict_clause is not None:
-                # Conflict detected during unit propagation
                 backtrack_level, learned_clause = self.analyze_conflict(conflict_clause)
                 if backtrack_level < 0:
                     return False
@@ -67,7 +55,6 @@ class SATSolver:
             elif self.all_vars_assigned():
                 break
             else:
-                # Decision making
                 self.decision_level += 1
                 self.decision_count += 1
                 decision_var, decision_val = self.select_decision_variable()
@@ -79,21 +66,11 @@ class SATSolver:
         return True
 
     def pick_branching_variable(self):
-        """
-        Selects the first unassigned variable in the natural order.
-        :return: variable, assigned value
-        """
         for var in self.variables:
             if self.assignments[var] == UNASSIGN:
                 return var, TRUE
                 
     def parse_cnf(self, file_path):
-        """
-        Parses a DIMACS CNF file, returns clauses and literals.
-        :param file_path: the file path
-        :raises OSError: if file format is incorrect
-        :returns: (clauses, literals)
-        """
         with open(file_path) as file:
             lines = [
                 line.strip().split() for line in file.readlines()
@@ -266,4 +243,3 @@ class ImplicationNode:
         for parent in self.parents:
             parents.update(parent.all_parents())
         return list(parents)
-
