@@ -1,10 +1,6 @@
 import argparse
-import os
 from solver import SATSolver
 from branch_heuristics import DynamicLargestIndividualSumSolver, JeroslowWangOneSidedSolver
-import csv
-import pandas as pd
-import time
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Choose heuristics and input file for SAT Solver.')
@@ -32,3 +28,4 @@ if __name__ == '__main__':
     
     print(f"Time Taken: {answer['time']}")
     print(f"Decision Count: {answer['decisions']}")
+    print(f"r_value: {answer['r_value']}")
