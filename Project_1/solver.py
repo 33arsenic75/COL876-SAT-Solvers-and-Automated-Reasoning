@@ -34,29 +34,54 @@ class SATSolver:
     def preprocess(self):
         pass
 
+    # def solve(self):
+    #     self.preprocess()
+    #     while not self.all_vars_assigned():
+    #         conflict_clause = self.unit_propagation()
+    #         if conflict_clause is not None:
+    #             learned_clause, backtrack_level = self.analyze_conflict(conflict_clause)
+    #             if backtrack_level < 0:
+    #                 return False
+    #             self.learned_clauses.add(learned_clause)
+    #             self.backtrack(backtrack_level)
+    #             self.decision_level = backtrack_level
+    #         elif self.all_vars_assigned():
+    #             break
+    #         else:
+    #             self.decision_count += 1
+    #             self.decision_level += 1
+    #             decision_val, decision_var = self.select_decision_variable()
+    #             self.decision_vars.add(decision_var)
+    #             self.decision_history[self.decision_level], self.assignments[decision_var], self.propagation_history[self.decision_level] = decision_var, decision_val, deque()
+    #             self.update_implication_graph(decision_var)
+    #     return True
     def solve(self):
         self.preprocess()
-        while not self.all_vars_assigned():
+
+        while True:
+            if self.all_vars_assigned():
+                break
+            
             conflict_clause = self.unit_propagation()
             if conflict_clause is not None:
-                backtrack_level, learned_clause = self.analyze_conflict(conflict_clause)
+                learned_clause, backtrack_level = self.analyze_conflict(conflict_clause)
                 if backtrack_level < 0:
                     return False
                 self.learned_clauses.add(learned_clause)
                 self.backtrack(backtrack_level)
                 self.decision_level = backtrack_level
-            elif self.all_vars_assigned():
-                break
             else:
                 self.decision_count += 1
                 self.decision_level += 1
-                decision_var, decision_val = self.select_decision_variable()
+                decision_val, decision_var = self.select_decision_variable()
                 self.decision_vars.add(decision_var)
                 self.decision_history[self.decision_level] = decision_var
                 self.assignments[decision_var] = decision_val
                 self.propagation_history[self.decision_level] = deque()
                 self.update_implication_graph(decision_var)
+
         return True
+
 
     def pick_branching_variable(self):
         for var in self.variables:
@@ -96,16 +121,16 @@ class SATSolver:
     def evaluate_cnf(self):
         return min(map(self.evaluate_clause, self.clauses))
 
-    def is_unit_clause(self, clause):
-        unassigned_literal, values = None, []
-        for literal in clause:
-            value = self.evaluate_literal(literal)
-            values.append(value)
-            unassigned_literal = literal if value == UNASSIGN else unassigned_literal
 
-        is_unit = ((values.count(F) == len(clause) - 1 and values.count(UNASSIGN) == 1) or
-                   (len(clause) == 1 and values.count(UNASSIGN) == 1))
-        return is_unit, unassigned_literal
+    def is_unit_clause(self, clause):
+        unassigned_literals = [literal for literal in clause if self.evaluate_literal(literal) == UNASSIGN]
+        assigned_count = sum(1 for literal in clause if self.evaluate_literal(literal) == F)
+
+        is_unit = (len(unassigned_literals) == 1 and assigned_count == len(clause) - 1) or \
+                (len(clause) == 1 and len(unassigned_literals) == 1)
+
+        return is_unit, unassigned_literals[0] if is_unit else None
+
 
     def update_implication_graph(self, var, clause=None):
         node = self.implication_graph[var]
@@ -116,45 +141,46 @@ class SATSolver:
             [self.implication_graph[abs(lit)].children.append(node) for lit in clause if abs(lit) != var]
             node.clause = clause
 
-
     def unit_propagation(self):
         while True:
             propagation_queue = deque()
-            for clause in self.clauses.union(self.learned_clauses):
+            clauses_to_evaluate = self.clauses.union(self.learned_clauses)
+            for clause in clauses_to_evaluate:
                 clause_value = self.evaluate_clause(clause)
                 if clause_value == F:
-                    return clause
-                if clause_value == T:
-                    continue
-                else:
+                    return clause 
+                elif clause_value == UNASSIGN:
                     is_unit, unit_literal = self.is_unit_clause(clause)
-                    if not is_unit:
-                        continue
-                    propagation_pair = (unit_literal, clause)
-                    if propagation_pair not in propagation_queue:
-                        propagation_queue.append(propagation_pair)
-            if not propagation_queue:
-                return None
+                    if is_unit:
+                        propagation_queue.append((clause, unit_literal))
 
-            for prop_literal, clause in propagation_queue:
+            if not propagation_queue:
+                return None 
+            for clause, prop_literal in propagation_queue:
                 prop_var = abs(prop_literal)
                 self.assignments[prop_var] = T if prop_literal > 0 else F
                 self.update_implication_graph(prop_var, clause=clause)
-                try:
+                if self.decision_level in self.propagation_history:
                     self.propagation_history[self.decision_level].append(prop_literal)
-                except KeyError:
-                    pass
+                else:
+                    self.propagation_history[self.decision_level] = deque([prop_literal])
 
-    def select_decision_variable(self):
-        var = next(self.unassigned_vars())
-        return var, T
     
     def all_vars_assigned(self):
         return all(var in self.assignments for var in self.variables) and \
                not any(var for var in self.variables if self.assignments[var] == UNASSIGN)
     
+    def select_decision_variable(self):
+        var = next(self.unassigned_vars())
+        return T, var
+    
     def unassigned_vars(self):
-        return filter(lambda v: v in self.assignments and self.assignments[v] == UNASSIGN, self.variables)
+        unassigned = []
+        for var in self.variables:
+            if var in self.assignments and self.assignments[var] == UNASSIGN:
+                unassigned.append(var)
+        return iter(unassigned)
+
     
     def get_unit_clauses(self):
         return list(filter(lambda x: x[0], map(self.is_unit_clause, self.clauses)))
@@ -164,7 +190,11 @@ class SATSolver:
         def latest_assigned_var(clause):
             for var in reversed(assign_history):
                 if -var in clause or var in clause:
-                    return var, [x for x in clause if abs(x) != abs(var)]
+                    lst = []
+                    for x in clause:
+                        if abs(x) != abs(var):
+                            lst.append(x)
+                    return var, lst
 
         if self.decision_level == 0:
             return -1, None
@@ -191,7 +221,7 @@ class SATSolver:
         backtrack_level = max([self.implication_graph[abs(x)].level for x in previous_level_literals]) if previous_level_literals else self.decision_level - 1
         learned_clause = frozenset(current_level_literals.union(previous_level_literals))
         
-        return backtrack_level, learned_clause
+        return learned_clause, backtrack_level
     
     def backtrack(self, level):
         for _, node in self.implication_graph.items():

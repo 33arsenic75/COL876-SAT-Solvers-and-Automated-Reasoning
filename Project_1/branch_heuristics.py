@@ -26,10 +26,10 @@ class DynamicLargestIndividualSumSolver(SATSolver):
         neg_count = max(v_neg.items(), key=operator.itemgetter(1))
         if pos_count[1] > neg_count[1]:
             # print(f"DynamicLargestIndividualSumSolver picked variable: {pos_count[0]}")
-            return pos_count[0], TRUE
+            return TRUE, pos_count[0]
         else:
             # print(f"DynamicLargestIndividualSumSolver picked variable: {neg_count[0]}")
-            return neg_count[0], FALSE
+            return FALSE, neg_count[0]
 
 
 class JeroslowWangOneSidedSolver(SATSolver):
@@ -43,4 +43,4 @@ class JeroslowWangOneSidedSolver(SATSolver):
         unassigned_vars = filter(lambda v: self.assignments[v] == UNASSIGN, self.variables)
         best_var = max(unassigned_vars, key=lambda v: self.jw_scores[v])
         # print(f"JeroslowWangOneSidedSolver picked variable: {best_var}")
-        return best_var, random.sample([TRUE, FALSE], 1)[0]
+        return random.sample([TRUE, FALSE], 1)[0], best_var
