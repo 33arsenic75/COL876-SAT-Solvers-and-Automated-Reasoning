@@ -14,12 +14,12 @@ heuristics_list = [
 testcases_folder = 'testcases'
 start_r = 0
 start_n = 0
-end_r = 1.2
+end_r = 7
 end_n = 0
 test_files = [f for f in os.listdir(testcases_folder) if f.endswith('.cnf')]
 test_files.sort()
 
-with open('benchmark_results.csv', mode='a', newline='') as csv_file:  # Change mode to 'a' for appending
+with open('benchmark_result_1.csv', mode='a', newline='') as csv_file:  # Change mode to 'a' for appending
     fieldnames = ['r'] + [f'{heuristic}_time' for heuristic in heuristics_list] + [f'{heuristic}_satisfiability' for heuristic in heuristics_list] + [f'{heuristic}_decision' for heuristic in heuristics_list]  # Added value to fieldnames
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
     if csv_file.tell() == 0:  # Check if the file is empty
@@ -46,21 +46,21 @@ with open('benchmark_results.csv', mode='a', newline='') as csv_file:  # Change 
                     ['make', '-s', heuristic, f'FILENAME={test_file_path}'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    timeout=3600
+                    timeout=1200
                 )
                 end_time = time.time()
                 time_taken = end_time - start_time
                 output = result.stdout.decode('utf-8')
-                satisfiability, value = output.split()
+                # satisfiability, value = output.split()
             except subprocess.TimeoutExpired:
-                time_taken = 3600
+                time_taken = 1200
                 satisfiability = 'TIMEOUT'
-            result_row[f'{heuristic}_time'] = round(time_taken, 4)  # Corrected rounding method
-            result_row[f'{heuristic}_satisfiability'] = satisfiability
-            result_row[f'{heuristic}_decision'] = value  # Added value to result_row
+            # result_row[f'{heuristic}_time'] = round(time_taken, 4)  # Corrected rounding method
+            # result_row[f'{heuristic}_satisfiability'] = satisfiability
+            # result_row[f'{heuristic}_decision'] = value  # Added value to result_row
         print("Done with ", test_file_path)
-        writer.writerow(result_row)
-        csv_file.flush()
+        # writer.writerow(result_row)
+        # csv_file.flush()
 
 
 print("Benchmarking completed. Results saved to benchmark_results.csv.")
