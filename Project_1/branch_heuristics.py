@@ -5,6 +5,40 @@ TRUE = 1
 FALSE = 0
 UNASSIGN = -1
 
+
+class RandomHeuristicsSolver(SATSolver):
+    def select_decision_variable(self):
+        unassigned_vars = [v for v in self.variables if self.assignments[v] == UNASSIGN]
+        if not unassigned_vars:
+            return None
+        selected_var = random.choice(unassigned_vars)
+        return random.choice([TRUE, FALSE]), selected_var
+    
+
+class TwoClauseHeuristicSolver(SATSolver):
+    def preprocess(self):
+        self.two_clause_count = {x: 0 for x in self.variables if self.assignments[x] == UNASSIGN}
+        for clause in self.clauses:
+            unassigned_vars_in_clause = [v for v in clause if self.assignments[abs(v)] == UNASSIGN]
+            if len(unassigned_vars_in_clause) == 2:
+                for v in unassigned_vars_in_clause:
+                    self.two_clause_count[abs(v)] += 1
+
+    def select_decision_variable(self):
+        unassigned_vars = [v for v in self.variables if self.assignments[v] == UNASSIGN]
+        if not unassigned_vars:
+            return None
+        count = {v: self.two_clause_count[v] for v in unassigned_vars}
+        max_count = max(count.values(), default=0)
+        if max_count == 0:
+            selected_var = random.choice(unassigned_vars)
+            return random.choice([TRUE, FALSE]), selected_var
+        candidates = [v for v, occur in count.items() if occur == max_count]
+        selected_var = random.choice(candidates)
+        return random.choice([TRUE, FALSE]), selected_var
+
+    
+
 class DynamicLargestIndividualSumSolver(SATSolver):
     def all_unresolved_clauses(self):
         return filter(lambda c: self.evaluate_clause(c) == UNASSIGN, self.clauses)
