@@ -11,10 +11,10 @@ heuristics_list = [
     'random',    
 ]
 testcases_folder = 'testcases'
-start_r = 4
+start_r = 4.2
 start_n = 1
 test_files = [f for f in os.listdir(testcases_folder) if f.endswith('.cnf')]
-test_files.sort()
+test_files.sort(reverse=True)
 
 with open('benchmark_results.csv', mode='a', newline='') as csv_file:  # Change mode to 'a' for appending
     fieldnames = ['r', 'FileName'] + [f'{heuristic}_time' for heuristic in heuristics_list] + [f'{heuristic}_satisfiability' for heuristic in heuristics_list] + [f'{heuristic}_decision' for heuristic in heuristics_list]  # Added value to fieldnames
@@ -50,7 +50,7 @@ with open('benchmark_results.csv', mode='a', newline='') as csv_file:  # Change 
                 output = result.stdout.decode('utf-8')
                 satisfiability, value = output.split()
             except subprocess.TimeoutExpired:
-                time_taken = 3600
+                time_taken = 1800
                 satisfiability = 'TIMEOUT'
                 value = 'TIMEOUT'
             result_row['FileName'] = test_file
