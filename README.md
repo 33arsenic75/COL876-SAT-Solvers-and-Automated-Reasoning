@@ -1,6 +1,6 @@
 # COL-876: SAT Solvers and Automated Reasoning
 
-This repository contains resources, notes, and solutions for **COL-876: SAT Solvers and Boolean Encodings**, a course taught by Dr. Priyanka Golia. The course provides an in-depth look into SAT solving, Boolean satisfiability problems, and encoding techniques used to represent various computational problems as SAT instances.
+This repository contains resources, notes, and solutions for **COL-876: SAT Solvers and Boolean Encodings**, a course taught by Dr. Priyanka Golia at IITD. The course provides an in-depth look into SAT solving, Boolean satisfiability problems, and encoding techniques and Applications of SAT Solver used to represent various computational problems as SAT instances.
 
 ## Course Overview
 
