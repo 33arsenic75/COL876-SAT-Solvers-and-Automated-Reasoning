@@ -55,7 +55,3 @@ This repository contains resources, notes, and solutions for **COL-876: SAT Solv
 - **`Project_1/`**: Code, DIMACS format files, and report for Project 1.
 - **`Project_2/`**: Code, report, and presentation materials for Project 2.
 - **`Slides/`**: Lecture slides and additional presentation materials.
-
-## Setup
-
-The repository contains Python scripts and other resources compatible with popular SAT solving libraries. Install dependencies with:
