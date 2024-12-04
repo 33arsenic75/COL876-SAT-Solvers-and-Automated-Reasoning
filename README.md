@@ -58,5 +58,8 @@ This repository contains resources, notes, and solutions for **COL-876: SAT Solv
 - **`Slides/`**: Lecture slides and additional presentation materials.
 
 ## Grading
-A  :- 90+ 
-A- :- 79+
+Class strength was only 8 students.
+
+A  :- at 95 (1 student (me :) ) ) 
+
+A- :- 79, 81 (atleast 2 students in my knowledge)
