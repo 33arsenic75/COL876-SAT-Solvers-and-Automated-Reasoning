@@ -7,6 +7,7 @@ This repository contains resources, notes, and solutions for **COL-876: SAT Solv
 **Instructor:** Dr. Priyanka Golia  
 **Institute:** Indian Institute of Technology Delhi (IITD)  
 **Course Topics:** The course centers on SAT solvers, Boolean encodings, satisfiability problems, and strategies for effective SAT formulation and solving.
+
 **Course Webpage:** https://priyanka-golia.github.io/COL-876/index.html
 
 ## Course Structure
@@ -55,3 +56,7 @@ This repository contains resources, notes, and solutions for **COL-876: SAT Solv
 - **`Project_1/`**: Code, DIMACS format files, and report for Project 1.
 - **`Project_2/`**: Code, report, and presentation materials for Project 2.
 - **`Slides/`**: Lecture slides and additional presentation materials.
+
+## Grading
+A  :- 90+ 
+A- :- 79+
